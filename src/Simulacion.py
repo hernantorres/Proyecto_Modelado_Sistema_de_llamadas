@@ -26,7 +26,7 @@ class Simulacion:
 	# Necesaria para no superponer llamadas
 	# (un desvío podría darse después del otros
 	# y se perdería la anterior)
-	cola_desvio_A_B
+	colaDesvioAB
 
 	# Llamadas que entran al sistema, para estadísticas
 	listaLlamadas_A
@@ -41,10 +41,10 @@ class Simulacion:
 
 
 
-	def __init__(self, iteraciones, tiempo_maximo, modo_lento = False, delay = 0):
+	def __init__(self, iteraciones, tiempoMaximo, modoLento = False, delay = 0):
 		self.iteraciones = iteraciones
-		self.tiempo_maximo = tiempo_maximo
-		self.modo_lento = modo_lento
+		self.tiempoMaximo = tiempoMaximo
+		self.modoLento = modoLento
 		self.delay = delay
 
 		self.Reloj = 0.0
@@ -62,19 +62,19 @@ class Simulacion:
 		# ...
 
 
-	def arribo_A:
+	def arriboA:
 		# ...
 
-	def arribo_B:
+	def arriboB:
 		# ...
 
-	def salida_A:
+	def salidaA:
 		# ...
 
-	def salida_B:
+	def salidaB:
 		# ...
 
-	def desvio_A_B:
+	def desvioAB:
 		# ...
 
 	def imprimirDatosDuranteSimulacion:
