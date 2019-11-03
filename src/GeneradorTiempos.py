@@ -1,0 +1,23 @@
+# Acá no hace falta una clase, basta implementar
+# las funciones en el módulo e importarlo
+
+def generar_tiempo_arribo_A:
+	# ...
+
+def generar_tiempo_arribo_B:
+	# ...
+
+def generar_tiempo_desvio_A_B:
+	# ...
+
+def generar_tiempo_tipo1_A:
+	# ...
+
+def generat_tiempo_tipo2_A:
+	# ...
+
+def generar_tiempo_tipo1_B:
+	# ...
+
+def generat_tiempo_tipo2_B:
+	# ...
