@@ -80,12 +80,9 @@ class RuteadorB(Ruteador):
 		# return valor
 
 	#def generatTiempoTipo2B(self):
-		# ...
-
-
-
-
-
-
-
-
+		# aleatorio = random.uniform(0, 1)
+		# if 0 < aleatorio and aleatorio < (1/3):
+		# 	valor = 2 * aleatorio
+		# elif (1/3) < aleatorio and aleatorio < 1:
+		#	valor = 3 - 2 * math.sqrt(2 * (1 - aleatorio))
+		# return valor
