@@ -64,17 +64,10 @@ class Simulacion:
 			self.SA = INFINITO
 			self.SB = INFINITO
 			self.DAB = INFINITO
-<<<<<<< HEAD
 			ruteadorA = ruteador.RuteadorA()
 			ruteadorB = ruteador.RuteadorB()
-
-			while(self.reloj < self.tiempoMaximo):
-=======
-			ruteadorA.reiniciar()
-			ruteadorB.reiniciar()
 			
-			while(self.reloj <= self.tiempoMaximo):
->>>>>>> 88bba85fb460f45f814fafd276ad994a0f27b8a7
+			while(self.reloj < self.tiempoMaximo):
 			# min es una función de python
 				proximo_evento = min(self.LA, self.LB, self.SA, self.SB, self.DAB)
 				# python no posee "switch", con 5 condiciones esta bien usar ifs
@@ -89,7 +82,7 @@ class Simulacion:
 				elif(proximo_evento == self.DAB):
 					self.desvioAB()
 
-				if( modoLento )
+				if(modoLento):
 					time.sleep(self.delay)
 
 			# se recopilan datos para estadisticas finales
@@ -98,8 +91,6 @@ class Simulacion:
 			self.estadisticasA.tiempoTotal += self.reloj
 		# ...
 
-
-<<<<<<< HEAD
 	def arriboA(self, ruteadorA):
 		self.reloj = self.LA
 		llamada = Llamada()
@@ -131,10 +122,6 @@ class Simulacion:
 
 
 
-=======
-	#def arriboA(self):
-	
->>>>>>> 88bba85fb460f45f814fafd276ad994a0f27b8a7
 
 	#def arriboB(self):
 		# ...
