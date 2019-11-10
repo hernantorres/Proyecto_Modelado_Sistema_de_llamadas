@@ -19,11 +19,19 @@ class Ruteador:
 
 	# cola de llamadas
 	colaLlamadas = []
+
+	def reiniciar(self):
+		ocupado = False
+		llamadasEnCola = 0
+		llamadasRecibidas = 0
+		llamadasRuteadas = 0
+		tamanoPromCola = 0.0
+		tiempoPromCola = 0.0
+		tiempoPromAtencion = 0.0
+		colaLlamadas.clear()
 	
 
 class RuteadorA(Ruteador):
-
-	llamadasDesviadasAB = 0
 
 	#def generarTiempoArriboA(self):
 		# aleatorio = random.uniform(0, 1)
@@ -31,14 +39,14 @@ class RuteadorA(Ruteador):
 		# return valor
 
 	#def generarTiempoDesvioAB(self):
-		# time.sleep(0.5)
+		# return 0.5
 
 	#def generarTiempoTipo1A(self):
 		# aleatorio = random.uniform(0, 1)
 		# valor = 10 * math.sqrt(5 * aleatorio + 4)
 		# return valor
 
-	#def generatTiempoTipo2A(self):
+	#def generarTiempoTipo2A(self):
 		# aleatorio = 0
 		# for index in range(12):
 		# 	aleatorio += random.uniform(0, 1)
@@ -46,9 +54,20 @@ class RuteadorA(Ruteador):
 		# valor = 1 * aleatorio + 15
 		# return valor
 
+	def generarTipoLlamadaA(self):
+		aleatorio = random.uniform(0,1)
+		if( aleatorio <= 0,2 ):
+			return 1
+		else:
+			return 2
+
 class RuteadorB(Ruteador):
 
 	llamadasPerdidasB = 0
+	llamadasLocalesB = 0
+
+	# este contador debería ir acá pues es B quien las rutea
+	llamadasDesviadasAB = 0
 
 	#def generarTiempoArriboB(self):
 		# aleatorio = random.uniform(0, 1)

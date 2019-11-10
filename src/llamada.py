@@ -7,8 +7,8 @@ class Llamada:
 	horaDeSalida = 0.0
 	desviada = False
 
-	def __init__(self):
-        self.horaDeArribo = 0.0
+	def __init__(self, horaDeArribo):
+        self.horaDeArribo = horaDeArribo
 		self.horaDeAtencion = 0.0
 		self.horaDeSalida = 0.0
 		self.desviada = False
