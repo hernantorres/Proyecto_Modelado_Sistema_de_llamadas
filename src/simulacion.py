@@ -6,7 +6,9 @@
 # implementar eventos
 
 import math
+import time
 import estadisticas
+import llamada
 import ruteador
 
 INFINITO = math.inf
@@ -37,8 +39,9 @@ class Simulacion:
 	# y se perdería la anterior)
 	colaDesvioAB = []
 
-	#Lista de estadísticas para cada simulación 
-	#listaEstadisticas = []
+	# ubicamos los ruteadores aca para lo eventos puedan acceder a ellos
+	ruteadorA = ruteador.RuteadorA()
+	ruteadorB = ruteador.RuteadorB()
 
 	def __init__(self, iteraciones, tiempoMaximo, modoLento = False, delay = 0):
 		self.iteraciones = iteraciones
@@ -47,6 +50,11 @@ class Simulacion:
 		self.delay = delay
 
 	def iniciar(self):
+
+		esdisticasA = estadisticas.Estadisticas()
+		estadisticasB = estadisticas.EstadisticasB()
+		estadisticasAB = estadisticas.Estadisticas()
+
 		for iteracion in range(self.iteraciones):
 			# se reinician variables
 			self.reloj = 0.0
@@ -55,28 +63,36 @@ class Simulacion:
 			self.SA = INFINITO
 			self.SB = INFINITO
 			self.DAB = INFINITO
-			ruteadorA = ruteador.RuteadorA()
-			ruteadorB = ruteador.RuteadorB()
-
-			while(self.reloj < self.tiempoMaximo)
+			ruteadorA.reiniciar()
+			ruteadorB.reiniciar()
+			
+			while(self.reloj <= self.tiempoMaximo):
 			# min es una función de python
 				proximo_evento = min(self.LA, self.LB, self.SA, self.SB, self.DAB)
 				# python no posee "switch", con 5 condiciones esta bien usar ifs
 				if  (proximo_evento == self.LA):
-					arriboA()
+					self.arriboA()
 				elif(proximo_evento == self.LB):
-					arriboB()
+					self.arriboB()
 				elif(proximo_evento == self.SA):
-					salidaA()
+					self.salidaA()
 				elif(proximo_evento == self.SB):
-					salidaB()
+					self.salidaB()
 				elif(proximo_evento == self.DAB):
-					desvioAB()
+					self.desvioAB()
+
+				if( modoLento )
+					time.sleep(self.delay)
+
+			# se recopilan datos para estadisticas finales
+			self.estadisticasA.tiempoTotal += self.reloj
+			self.estadisticasB.tiempoTotal += self.reloj
+			self.estadisticasA.tiempoTotal += self.reloj
 		# ...
 
 
 	#def arriboA(self):
-		# ...
+	
 
 	#def arriboB(self):
 		# ...
