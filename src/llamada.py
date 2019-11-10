@@ -22,7 +22,7 @@ class Llamada:
 		return tCola
 
 	# tiempo en el sistema = hora de salida - hora de arribo
-	def tiempo_en_sistema():
+	def tiempoEnsistema():
 		tCola = 0.0
 		# Se debe checkear que las horas hayan sido asignadas
 		if(self.horaDeArribo != 0.0 and self.horaDeSalida != 0.0):

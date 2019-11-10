@@ -93,7 +93,8 @@ class Simulacion:
 
 	def arriboA(self, ruteadorA):
 		self.reloj = self.LA
-		llamada = Llamada()
+		llamada = Llamada(self.reloj)
+		ruteadorA.llamadasRecibidas += 1
 		if ruteadorA.ocupado == True: 
 			if len(ruteadorA.colaLlamadas) == 5: 
 				if self.DAB != INFINITO:
@@ -107,15 +108,16 @@ class Simulacion:
 		else:
 			ruteadorA.colaLlamadas.append(llamada) 
 			ruteadorA.llamadasEnCola += 1
-			tipoLlamada = generarTipoLlamadaA()
+			tipoLlamada = ruteadorA.generarTipoLlamadaA()
 			ruteadorA.ocupado = True
 			if tipoLlamada == 1:
-				self.SA = reloj + ruteadorA.generarTiempoTipo1A
+				self.SA = reloj + ruteadorA.generarTiempoTipo1A()
 			else: 
-				self.SA = reloj + ruteadorA.generarTiempoTipo2A
+				self.SA = reloj + ruteadorA.generarTiempoTipo2A()
 		self.LA = ruteadorA.generarTiempoArriboA
-		if reloj >= self.tiempoMaximo:
-			vegetta = 777
+		# esto es el while
+		#if reloj >= self.tiempoMaximo:
+			#vegetta = 777
 			#estadisticas.generarEstadisticas()
 		# Else volver al while
 
