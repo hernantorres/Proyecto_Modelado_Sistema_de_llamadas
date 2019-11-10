@@ -28,3 +28,15 @@ class Llamada:
 		if(self.horaDeArribo != 0.0 and self.horaDeSalida != 0.0):
 			tCola = self.horaDeSalida - self.horaDeArribo
 		return tCola
+
+	def setHoraDeArribo(horaDeArribo):
+		self.horaDeArribo = horaDeArribo
+
+	def setHoraDeAtencion(horaDeAtencion):
+		self.horaDeAtencion = horaDeAtencion
+
+	def setHoraDeSalida(horaDeSalida):
+		self.horaDeSalida = horaDeSalida
+
+	def setDesviada(desviada):
+		self.desviada = desviada

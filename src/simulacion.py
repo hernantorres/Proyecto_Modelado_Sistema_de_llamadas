@@ -8,6 +8,7 @@
 import math
 import estadisticas
 import ruteador
+import llamada
 
 INFINITO = math.inf
 
@@ -58,7 +59,7 @@ class Simulacion:
 			ruteadorA = ruteador.RuteadorA()
 			ruteadorB = ruteador.RuteadorB()
 
-			while(self.reloj < self.tiempoMaximo)
+			while(self.reloj < self.tiempoMaximo):
 			# min es una función de python
 				proximo_evento = min(self.LA, self.LB, self.SA, self.SB, self.DAB)
 				# python no posee "switch", con 5 condiciones esta bien usar ifs
@@ -75,8 +76,37 @@ class Simulacion:
 		# ...
 
 
-	#def arriboA(self):
-		# ...
+	def arriboA(self, ruteadorA):
+		self.reloj = self.LA
+		llamada = Llamada()
+		if ruteadorA.ocupado == True: 
+			if len(ruteadorA.colaLlamadas) == 5: 
+				if self.DAB != INFINITO:
+					tiempoDesvio = reloj + ruteadorA.generarTiempoDesvioAB()
+					llamada.setHoraDeArribo(tiempoDesvio)
+					llamada.setDesviada(True)
+					self.colaDesvioAB.append(llamada)
+			else:
+				ruteadorA.colaLlamadas.append(llamada) 
+				ruteadorA.llamadasEnCola += 1
+		else:
+			ruteadorA.colaLlamadas.append(llamada) 
+			ruteadorA.llamadasEnCola += 1
+			tipoLlamada = generarTipoLlamadaA()
+			ruteadorA.ocupado = True
+			if tipoLlamada == 1:
+				self.SA = reloj + ruteadorA.generarTiempoTipo1A
+			else: 
+				self.SA = reloj + ruteadorA.generarTiempoTipo2A
+		self.LA = ruteadorA.generarTiempoArriboA
+		if reloj >= self.tiempoMaximo:
+			vegetta = 777
+			#estadisticas.generarEstadisticas()
+		# Else volver al while
+
+
+
+
 
 	#def arriboB(self):
 		# ...
