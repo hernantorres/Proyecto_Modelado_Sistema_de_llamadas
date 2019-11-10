@@ -1,6 +1,8 @@
 # implementar funciones generadores de tiempos
 
 import math
+import random
+import time
 
 class Ruteador:
 
@@ -24,26 +26,39 @@ class RuteadorA(Ruteador):
 	llamadasDesviadasAB = 0
 
 	#def generarTiempoArriboA(self):
-		# ...
+		# aleatorio = random.uniform(0, 1)
+		# valor = log(1 - aleatorio) / (2/3)
+		# return valor
 
 	#def generarTiempoDesvioAB(self):
-		# ...
+		# time.sleep(0.5)
 
 	#def generarTiempoTipo1A(self):
-		# ...
+		# aleatorio = random.uniform(0, 1)
+		# valor = 10 * math.sqrt(5 * aleatorio + 4)
+		# return valor
 
 	#def generatTiempoTipo2A(self):
-		# ...
+		# aleatorio = 0
+		# for index in range(12):
+		# 	aleatorio += random.uniform(0, 1)
+		# aleatorio -= 6
+		# valor = 1 * aleatorio + 15
+		# return valor
 
 class RuteadorB(Ruteador):
 
 	llamadasPerdidasB = 0
 
 	#def generarTiempoArriboB(self):
-		# ...
+		# aleatorio = random.uniform(0, 1)
+		# valor = 2 * aleatorio + 1
+		# return valor
 
 	#def generarTiempoTipo1B(self):
-		# ...
+		# aleatorio = random.uniform(0, 1)
+		# valor = log(1 - aleatorio) / (4/3)
+		# return valor
 
 	#def generatTiempoTipo2B(self):
 		# ...
