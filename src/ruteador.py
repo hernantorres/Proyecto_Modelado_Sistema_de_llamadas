@@ -13,9 +13,8 @@ class Ruteador:
 	# Acumuladores de llamadas que entran al sistema, para estadísticas
 	llamadasRecibidas = 0
 	llamadasRuteadas = 0
-	tamanoPromCola = 0.0
-	tiempoPromCola = 0.0
-	tiempoPromAtencion = 0.0
+	tiempoTotalCola = 0.0
+	tiempoPermanencia = 0.0
 
 	# cola de llamadas
 	colaLlamadas = []
@@ -25,11 +24,17 @@ class Ruteador:
 		llamadasEnCola = 0
 		llamadasRecibidas = 0
 		llamadasRuteadas = 0
-		tamanoPromCola = 0.0
-		tiempoPromCola = 0.0
-		tiempoPromAtencion = 0.0
+		tamanoPondCola = 0.0
+		tiempoTotalCola = 0.0
+		tiempoTotalAtencion = 0.0
 		colaLlamadas.clear()
-	
+
+	def generarTipoLlamadaA(self):
+		aleatorio = random.uniform(0,1)
+		if( aleatorio <= 0,2 ):
+			return 1
+		else:
+			return 2	
 
 class RuteadorA(Ruteador):
 
@@ -54,13 +59,6 @@ class RuteadorA(Ruteador):
 		# valor = 1 * aleatorio + 15
 		# return valor
 
-	def generarTipoLlamadaA(self):
-		aleatorio = random.uniform(0,1)
-		if( aleatorio <= 0,2 ):
-			return 1
-		else:
-			return 2
-
 class RuteadorB(Ruteador):
 
 	llamadasPerdidasB = 0
@@ -68,6 +66,19 @@ class RuteadorB(Ruteador):
 
 	# este contador debería ir acá pues es B quien las rutea
 	llamadasDesviadasAB = 0
+	
+	tamanoPondCola = 0.0
+
+	tiempoTotalColaDesviadas = 0.0
+	tiempoTotalPermanenciaDesviadas = 0.0
+
+	# Cuando fue el ultimo cambio, duracion entre cambios
+	tiempoUltimoCambio = 0.0
+
+	def obtTiempoUltimoCambio(self, horaDeCambio):
+		resultado = horaDeCambio - self.tiempoUltimoCambio
+		self.tiempoUltimoCambio = horaDeCambio
+		return resultado
 
 	#def generarTiempoArriboB(self):
 		# aleatorio = random.uniform(0, 1)

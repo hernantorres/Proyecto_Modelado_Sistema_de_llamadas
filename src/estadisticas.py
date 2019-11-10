@@ -59,6 +59,6 @@ class EstadisticasB(Estadisticas):
 		prom = tamañoColaTiempoB / tiempoTotal
 		return prom
 
-	def porcentajeLlamadasPerdidasB(perdidas, total)
+	def porcentajeLlamadasPerdidasB(self, perdidas, total):
 		porcentaje = llamadasPerdidasB / llamadasLocalesB
 		return porcentaje
