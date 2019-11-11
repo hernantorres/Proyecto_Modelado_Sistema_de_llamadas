@@ -65,6 +65,8 @@ class Simulacion:
 			self.SA = INFINITO
 			self.SB = INFINITO
 			self.DAB = INFINITO
+			self.eventoProcesado = ""
+			self.colaDesvioAB.clear()
 			ruteadorA = ruteador.RuteadorA()
 			ruteadorB = ruteador.RuteadorB()
 			
@@ -73,7 +75,7 @@ class Simulacion:
 			# min es una función de python
 				proximo_evento = min(self.LA, self.LB, self.SA, self.SB, self.DAB)
 				# python no posee "switch", con 5 condiciones esta bien usar ifs
-				#print("Proximo evento:", self.eventoProcesado, str(proximo_evento))
+				print("Proximo evento:", self.eventoProcesado, str(proximo_evento))
 				if  (proximo_evento == self.LA):
 					self.arriboA(ruteadorA)
 					self.eventoProcesado = "Arribo A"
@@ -89,7 +91,7 @@ class Simulacion:
 				elif(proximo_evento == self.DAB):
 					self.desvioAB(ruteadorA, ruteadorB)
 					self.eventoProcesado = "Desvío A a B"
-
+					
 			# se recopilan datos para estadisticas finales
 			estadisticasA.tiempoTotal += self.reloj
 			estadisticasB.tiempoTotal += self.reloj
@@ -117,7 +119,6 @@ class Simulacion:
 		# Tener cuidado de olvidarnos sumar el 0.5 
 		self.reloj = self.LA
 		call = llamada.Llamada(self.reloj)
-		ruteadorA.llamadasRecibidas += 1
 		#if ruteadorA.ocupado == True: 
 		if len(ruteadorA.colaLlamadas) >= 5: # Desvio
 			call.setDesviada(True)
@@ -132,6 +133,8 @@ class Simulacion:
 		else:
 			ruteadorA.colaLlamadas.append(call) 
 			ruteadorA.llamadasEnCola += 1
+			ruteadorA.llamadasRecibidas += 1
+		if not ruteadorA.ocupado:
 			tipoLlamada = ruteadorA.generarTipoLlamadaA()
 			ruteadorA.ocupado = True
 			if tipoLlamada == 1:
@@ -140,7 +143,7 @@ class Simulacion:
 			else: 
 				call.tiempoAtencion = ruteadorA.generarTiempoTipo2A()
 				self.SA = self.reloj + call.tiempoAtencion
-			print("Hora generada salida en A:", call.tiempoAtencion)
+			print("Hora salida en A:", self.SA)
 		self.LA = self.reloj + ruteadorA.generarTiempoArriboA()
 
 	def arriboB(self, ruteadorB):
@@ -218,7 +221,10 @@ class Simulacion:
 		ruteadorB.llamadasEnCola += 1
 		ruteadorB.llamadasDesviadasAB += 1
 		ruteadorB.tamanoPondCola += ruteadorB.obtTiempoUltimoCambio(self.reloj) * ruteadorB.llamadasEnCola
-		self.DAB = INFINITO
+		if len(self.colaDesvioAB) > 0:
+			self.DAB = self.reloj + self.colaDesvioAB[0].horaDeArribo + 0.5
+		else:
+			self.DAB = INFINITO
 		if ruteadorB.ocupado == False:
 			ruteadorB.ocupado = True
 			tipoLlamada = ruteadorA.generarTipoLlamadaA()
