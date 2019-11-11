@@ -8,13 +8,13 @@ class Llamada:
 	desviada = False
 
 	def __init__(self, horaDeArribo):
-        self.horaDeArribo = horaDeArribo
+		self.horaDeArribo = horaDeArribo
 		self.horaDeSalida = 0.0
 		self.tiempoAtencion = 0.0
 		self.desviada = False
 
 	# tiempo_en_cola = hora de atencion - hora de arribo
-	def tiempoEnCola():
+	def tiempoEnCola(self):
 		tCola = 0.0
 		# Se debe checkear que las horas hayan sido asignadas
 		if(self.horaDeArribo != 0.0 and self.horaDeSalida - self.tiempoAtencion != 0.0):
@@ -22,21 +22,21 @@ class Llamada:
 		return tCola
 
 	# tiempo en el sistema = hora de salida - hora de arribo
-	def tiempoEnsistema():
+	def tiempoEnSistema(self):
 		tCola = 0.0
 		# Se debe checkear que las horas hayan sido asignadas
 		if(self.horaDeArribo != 0.0 and self.horaDeSalida != 0.0):
 			tCola = self.horaDeSalida - self.horaDeArribo
 		return tCola
 
-	def setHoraDeArribo(horaDeArribo):
+	def setHoraDeArribo(self, horaDeArribo):
 		self.horaDeArribo = horaDeArribo
 
-	def setHoraDeAtencion(horaDeAtencion):
+	def setHoraDeAtencion(self, horaDeAtencion):
 		self.horaDeAtencion = horaDeAtencion
 
-	def setHoraDeSalida(horaDeSalida):
+	def setHoraDeSalida(self, horaDeSalida):
 		self.horaDeSalida = horaDeSalida
 
-	def setDesviada(desviada):
+	def setDesviada(self, desviada):
 		self.desviada = desviada

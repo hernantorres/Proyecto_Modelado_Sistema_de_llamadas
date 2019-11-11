@@ -38,26 +38,29 @@ class Ruteador:
 
 class RuteadorA(Ruteador):
 
-	#def generarTiempoArriboA(self):
-		# aleatorio = random.uniform(0, 1)
-		# valor = log(1 - aleatorio) / (2/3)
-		# return valor
+	def generarTiempoArriboA(self):
+		aleatorio = random.uniform(0, 1)
+		if aleatorio != 1:
+			valor = math.log(1 - aleatorio) / -(2/3)
+		else:
+			valor = math.log(1 - 0.999) / -(2/3)
+		return valor
 
-	#def generarTiempoDesvioAB(self):
-		# return 0.5
+	def generarTiempoDesvioAB(self):
+		return 0.5
 
-	#def generarTiempoTipo1A(self):
-		# aleatorio = random.uniform(0, 1)
-		# valor = 10 * math.sqrt(5 * aleatorio + 4)
-		# return valor
+	def generarTiempoTipo1A(self):
+		aleatorio = random.uniform(0, 1)
+		valor = 10 * math.sqrt(5 * aleatorio + 4)
+		return valor
 
-	#def generarTiempoTipo2A(self):
-		# aleatorio = 0
-		# for index in range(12):
-		# 	aleatorio += random.uniform(0, 1)
-		# aleatorio -= 6
-		# valor = 1 * aleatorio + 15
-		# return valor
+	def generarTiempoTipo2A(self):
+		aleatorio = 0
+		for index in range(12):
+			aleatorio += random.uniform(0, 1)
+		aleatorio -= 6
+		valor = 1 * aleatorio + 15
+		return valor
 
 class RuteadorB(Ruteador):
 
@@ -80,20 +83,23 @@ class RuteadorB(Ruteador):
 		self.tiempoUltimoCambio = horaDeCambio
 		return resultado
 
-	#def generarTiempoArriboB(self):
-		# aleatorio = random.uniform(0, 1)
-		# valor = 2 * aleatorio + 1
-		# return valor
+	def generarTiempoArriboB(self):
+		aleatorio = random.uniform(0, 1)
+		valor = 2 * aleatorio + 1
+		return valor
 
-	#def generarTiempoTipo1B(self):
-		# aleatorio = random.uniform(0, 1)
-		# valor = log(1 - aleatorio) / (4/3)
-		# return valor
+	def generarTiempoTipo1B(self):
+		aleatorio = random.uniform(0, 1)
+		if aleatorio != 1:
+			valor = math.log(1 - aleatorio) / -(4/3)
+		else:
+			valor = math.log(1 - 0.999) / -(4/3)
+		return valor
 
-	#def generatTiempoTipo2B(self):
-		# aleatorio = random.uniform(0, 1)
-		# if 0 < aleatorio and aleatorio < (1/3):
-		# 	valor = 2 * aleatorio
-		# elif (1/3) < aleatorio and aleatorio < 1:
-		#	valor = 3 - 2 * math.sqrt(2 * (1 - aleatorio))
-		# return valor
+	def generarTiempoTipo2B(self):
+		aleatorio = random.uniform(0, 1)
+		if 0 < aleatorio and aleatorio < (1/3):
+			valor = 2 * aleatorio
+		elif (1/3) < aleatorio and aleatorio < 1:
+			valor = 3 - 2 * math.sqrt(2 * (1 - aleatorio))
+		return valor
