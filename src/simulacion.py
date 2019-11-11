@@ -75,7 +75,6 @@ class Simulacion:
 			# min es una función de python
 				proximo_evento = min(self.LA, self.LB, self.SA, self.SB, self.DAB)
 				# python no posee "switch", con 5 condiciones esta bien usar ifs
-				print("Proximo evento:", self.eventoProcesado, str(proximo_evento))
 				if  (proximo_evento == self.LA):
 					self.arriboA(ruteadorA)
 					self.eventoProcesado = "Arribo A"
@@ -91,7 +90,12 @@ class Simulacion:
 				elif(proximo_evento == self.DAB):
 					self.desvioAB(ruteadorA, ruteadorB)
 					self.eventoProcesado = "Desvío A a B"
-					
+				#print("Evento ejecutado:", self.eventoProcesado, str(proximo_evento))
+				#print("Cola de A: ", len(ruteadorA.colaLlamadas) ,". Cola de B: ", len(ruteadorB.colaLlamadas), "Cola desvio: ", len(self.colaDesvioAB))
+				if self.modoLento:
+					self.imprimirDuranteSimulacion(self.reloj, ruteadorA, ruteadorB)
+					time.sleep(self.delay)
+
 			# se recopilan datos para estadisticas finales
 			estadisticasA.tiempoTotal += self.reloj
 			estadisticasB.tiempoTotal += self.reloj
@@ -109,9 +113,10 @@ class Simulacion:
 			estadisticasB.llamadasRuteadasTotal += ruteadorB.llamadasRuteadas
 			estadisticasAB.llamadasRuteadasTotal += ruteadorB.tiempoTotalPermanenciaDesviadas
 
-			if self.modoLento:
-				self.imprimirDuranteSimulacion(self.reloj, ruteadorA, ruteadorB)
-				time.sleep(self.delay)
+			self.imprimirFinalCorrida(self.reloj, ruteadorA, ruteadorB)
+			#if self.modoLento:
+			#	self.imprimirDuranteSimulacion(self.reloj, ruteadorA, ruteadorB)
+			#	time.sleep(self.delay)
 					
 		# ...
 
@@ -120,7 +125,7 @@ class Simulacion:
 		self.reloj = self.LA
 		call = llamada.Llamada(self.reloj)
 		#if ruteadorA.ocupado == True: 
-		if len(ruteadorA.colaLlamadas) >= 5: # Desvio
+		if ruteadorA.llamadasEnCola >= 5: # Desvio
 			call.setDesviada(True)
 			self.colaDesvioAB.append(call)
 			tiempoDesvio = self.reloj + ruteadorA.generarTiempoDesvioAB()
@@ -143,7 +148,6 @@ class Simulacion:
 			else: 
 				call.tiempoAtencion = ruteadorA.generarTiempoTipo2A()
 				self.SA = self.reloj + call.tiempoAtencion
-			print("Hora salida en A:", self.SA)
 		self.LA = self.reloj + ruteadorA.generarTiempoArriboA()
 
 	def arriboB(self, ruteadorB):
@@ -169,7 +173,7 @@ class Simulacion:
 		call.horaDeSalida = self.reloj
 		ruteadorA.tiempoTotalCola += call.tiempoEnCola() 
 		ruteadorA.tiempoPermanencia += call.tiempoEnSistema()
-		if len(ruteadorA.colaLlamadas) > 0:
+		if ruteadorA.llamadasEnCola > 0:
 			ruteadorA.ocupado = True
 			#ruteadorA.llamadasRuteadas += 1
 			tipoLlamada = ruteadorA.generarTipoLlamadaA()
@@ -195,10 +199,10 @@ class Simulacion:
 			ruteadorB.tiempoTotalCola += call.tiempoEnCola()
 			ruteadorB.tiempoPermanencia += call.tiempoEnSistema()
 		ruteadorB.tamanoPondCola += ruteadorB.obtTiempoUltimoCambio(self.reloj) * ruteadorB.llamadasEnCola
-		if len(ruteadorB.colaLlamadas) > 0:
+		if ruteadorB.llamadasEnCola > 0:
 			ruteadorB.ocupado = True
 			ruteadorB.llamadasRuteadas += 1
-			if len(ruteadorB.colaLlamadas) > 4:
+			if ruteadorB.llamadasEnCola > 4:
 				if random.uniform(0, 1) <= 0.1:
 					ruteadorB.llamadasRuteadas -= 1
 					ruteadorB.llamadasPerdidasB += 1
@@ -220,6 +224,7 @@ class Simulacion:
 		ruteadorB.colaLlamadas.append(self.colaDesvioAB.pop(0)) 
 		ruteadorB.llamadasEnCola += 1
 		ruteadorB.llamadasDesviadasAB += 1
+		ruteadorB.llamadasRecibidas += 1
 		ruteadorB.tamanoPondCola += ruteadorB.obtTiempoUltimoCambio(self.reloj) * ruteadorB.llamadasEnCola
 		if len(self.colaDesvioAB) > 0:
 			self.DAB = self.reloj + self.colaDesvioAB[0].horaDeArribo + 0.5
@@ -232,8 +237,6 @@ class Simulacion:
 				self.SB = self.reloj + ruteadorA.generarTiempoTipo1A()
 			else:
 				self.SB = self.reloj + ruteadorA.generarTiempoTipo2A()
-		if len(self.colaDesvioAB) > 0:
-			self.DAB = self.colaDesvioAB[0].horaDeArribo + 0.5
 		
 		
 	def imprimirDuranteSimulacion(self, reloj, ruteadorA, ruteadorB):
@@ -255,6 +258,31 @@ class Simulacion:
 		print("Número llamadas desviadas de A a B:", ruteadorB.llamadasDesviadasAB)
 		print("Número llamadas ruteadas por A:", ruteadorA.llamadasRuteadas)
 		print("Número llamadas ruteadas por B:", ruteadorB.llamadasRuteadas)
+
+	def imprimirFinalCorrida(self, reloj, ruteadorA, ruteadorB):
+		# si no se han ruteado llamadas, evitamos dividir por 0
+		if ruteadorA.llamadasRuteadas == 0:
+			ruteadorA.llamadasRuteadas = 1 
+		if ruteadorB.llamadasRuteadas == 0:
+			ruteadorB.llamadasRuteadas = 1 
+		if ruteadorA.tiempoPermanencia == 0:
+			ruteadorA.tiempoPermanencia = 1 
+		if ruteadorB.tiempoPermanencia == 0:
+			ruteadorB.tiempoPermanencia = 1 
+		if ruteadorB.tiempoTotalPermanenciaDesviadas == 0:
+			ruteadorB.tiempoTotalPermanenciaDesviadas = 1 
+		print("/////////////////////////////////////////////////////////////////")
+		print("Tamaño prom. de la cola en B: ", ruteadorB.tamanoPondCola / reloj)
+		print("Tiempo prom. permanencia de una llamada en A: ", ruteadorA.tiempoPermanencia / ruteadorA.llamadasRuteadas)
+		print("Tiempo prom. permanencia de una llamada en B: ", ruteadorB.tiempoPermanencia / ruteadorB.llamadasRuteadas)
+		print("Tiempo prom. permanencia de una llamada desviada de A a B: ", ruteadorB.tiempoTotalPermanenciaDesviadas / ruteadorB.llamadasRuteadas)
+		print("Tiempo prom. en cola de una llamada en A: ", ruteadorA.tiempoTotalCola / ruteadorA.llamadasRecibidas)
+		print("Tiempo prom. en cola de una llamada en B: ", ruteadorB.tiempoTotalCola / ruteadorB.llamadasRecibidas)
+		print("Tiempo prom. en cola de una llamada desviada de A a B: ", ruteadorB.tiempoTotalColaDesviadas / ruteadorB.llamadasDesviadasAB)
+		# print("Porcentaje de llamadas perdidas por B :" )
+		print("Eficiencia A: ", (ruteadorA.tiempoPermanencia - ruteadorA.tiempoTotalCola) / ruteadorA.tiempoPermanencia)
+		print("Eficiencia B: ", (ruteadorB.tiempoPermanencia - ruteadorB.tiempoTotalCola) / ruteadorB.tiempoPermanencia)
+		print("Eficiencia desviadas A - B: ", (ruteadorB.tiempoTotalPermanenciaDesviadas - ruteadorB.tiempoTotalColaDesviadas) / ruteadorB.tiempoTotalPermanenciaDesviadas)
 
 
 

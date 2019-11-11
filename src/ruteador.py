@@ -19,6 +19,15 @@ class Ruteador:
 	# cola de llamadas
 	colaLlamadas = []
 
+	def __init__(self):
+		self.ocupado = False
+		self.llamadasEnCola = 0
+		self.llamadasRecibidas = 0
+		self.llamadasRuteadas = 0
+		self.tiempoTotalCola = 0.0
+		self.tiempoPermanencia = 0.0
+		self.colaLlamadas = []
+
 	def reiniciar(self):
 		ocupado = False
 		llamadasEnCola = 0
@@ -31,7 +40,7 @@ class Ruteador:
 
 	def generarTipoLlamadaA(self):
 		aleatorio = random.uniform(0,1)
-		if( aleatorio <= 0,2 ):
+		if( aleatorio <= 0.2 ):
 			return 1
 		else:
 			return 2	
