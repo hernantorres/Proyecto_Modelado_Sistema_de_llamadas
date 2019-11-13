@@ -19,7 +19,7 @@ class Llamada:
 		tCola = 0.0
 		# Se debe checkear que las horas hayan sido asignadas
 		if(self.horaDeArribo != 0.0 and self.horaDeSalida - self.tiempoAtencion != 0.0):
-			print("Salida ", self.horaDeSalida, "Atencion: ", self.tiempoAtencion, "Arribo: ", self.horaDeArribo)
+			#print("Salida ", self.horaDeSalida, "Atencion: ", self.tiempoAtencion, "Arribo: ", self.horaDeArribo)
 			tCola = self.horaDeSalida - self.tiempoAtencion - self.horaDeArribo
 		return tCola
 
@@ -28,7 +28,7 @@ class Llamada:
 		tCola = 0.0
 		# Se debe checkear que las horas hayan sido asignadas
 		if(self.horaDeArribo != 0.0 and self.horaDeSalida != 0.0):
-			print("Salida: ", self.horaDeSalida, "Arribo: ", self.horaDeArribo)
+			#print("Salida: ", self.horaDeSalida, "Arribo: ", self.horaDeArribo)
 			tCola = self.horaDeSalida - self.horaDeArribo
 		return tCola
 

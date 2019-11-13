@@ -52,10 +52,10 @@ class RuteadorA(Ruteador):
 
 	def generarTiempoArriboA(self):
 		aleatorio = random.uniform(0, 1)
-		if aleatorio != 1:
-			valor = math.log(1.0 - aleatorio) / -(2.0/3.0)
-		else:
-			valor = math.log(1.0 - 0.999) / -(2.0/3.0)
+		#if aleatorio != 1:
+		valor = math.log(1.0 - aleatorio) / -(2.0/3.0)
+		#else:
+		#	valor = math.log(1.0 - 0.999) / -(2.0/3.0)
 		return valor
 
 	def generarTiempoDesvioAB(self):
@@ -77,7 +77,7 @@ class RuteadorA(Ruteador):
 class RuteadorB(Ruteador):
 
 	llamadasPerdidasB = 0
-	llamadasLocalesB = 0
+	llamadasLocalesB = 0.0
 	llamadasRuteadasDesviadas = 0
 
 	# este contador debería ir acá pues es B quien las rutea
@@ -103,10 +103,10 @@ class RuteadorB(Ruteador):
 
 	def generarTiempoTipo1B(self):
 		aleatorio = random.uniform(0, 1)
-		if aleatorio != 1.0:
-			valor = math.log(1.0 - aleatorio) / -(4.0/3.0)
-		else:
-			valor = math.log(1.0 - 0.999) / -(4.0/3.0)
+		#if aleatorio != 1.0:
+		valor = math.log(1.0 - aleatorio) / -(4.0/3.0)
+		#else:
+			#valor = math.log(1.0 - 0.999) / -(4.0/3.0)
 		return valor
 
 	def generarTiempoTipo2B(self):
