@@ -19,6 +19,9 @@ class Ruteador:
 	# cola de llamadas
 	colaLlamadas = []
 
+
+	llamadasRuteadasLocales = 0
+
 	def __init__(self):
 		self.ocupado = False
 		self.llamadasEnCola = 0
@@ -75,6 +78,7 @@ class RuteadorB(Ruteador):
 
 	llamadasPerdidasB = 0
 	llamadasLocalesB = 0
+	llamadasRuteadasDesviadas = 0
 
 	# este contador debería ir acá pues es B quien las rutea
 	llamadasDesviadasAB = 0
