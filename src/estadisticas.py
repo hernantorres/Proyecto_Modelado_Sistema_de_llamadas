@@ -49,11 +49,11 @@ class Estadisticas:
 class EstadisticasB(Estadisticas):
 	
 	# acumulador de tamaño de cola B ponderado por tiempo
-	tamañoColaTiempoB = 0.0
+	tamanoColaTiempoB = 0.0
 
 	# acumuladores para promedio de llamadas perdidas en B
 	llamadasPerdidasB = 0
-	llamadasLocalesB = 0
+	llamadasLocalesAB = 0
 
 	def tamañoPromedioColaB(self):
 		prom = tamañoColaTiempoB / tiempoTotal

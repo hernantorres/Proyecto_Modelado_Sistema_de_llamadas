@@ -77,7 +77,7 @@ class RuteadorA(Ruteador):
 class RuteadorB(Ruteador):
 
 	llamadasPerdidasB = 0
-	llamadasLocalesB = 0.0
+	llamadasLocalesB = 0
 	llamadasRuteadasDesviadas = 0
 
 	# este contador debería ir acá pues es B quien las rutea
