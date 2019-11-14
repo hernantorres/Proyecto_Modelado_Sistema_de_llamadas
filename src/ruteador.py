@@ -6,22 +6,6 @@ import time
 
 class Ruteador:
 
-	"""# Variables del ruteador
-	ocupado = False
-	llamadasEnCola = 0
-
-	# Acumuladores de llamadas que entran al sistema, para estadísticas
-	llamadasRecibidas = 0
-	llamadasRuteadas = 0
-	tiempoTotalCola = 0.0
-	tiempoPermanencia = 0.0
-
-	# cola de llamadas
-	colaLlamadas = []
-
-
-	llamadasRuteadasLocales = 0"""
-
 	def __init__(self):
 		self.ocupado = False
 		self.llamadasEnCola = 0
@@ -31,7 +15,7 @@ class Ruteador:
 		self.tiempoPermanencia = 0.0
 		self.colaLlamadas = []
 		self.llamadasRuteadasLocales = 0
-
+	"""
 	def reiniciar(self):
 		ocupado = False
 		llamadasEnCola = 0
@@ -41,7 +25,7 @@ class Ruteador:
 		tiempoTotalCola = 0.0
 		tiempoTotalAtencion = 0.0
 		colaLlamadas.clear()
-
+	"""
 	def generarTipoLlamadaA(self):
 		aleatorio = random.uniform(0,1)
 		if( aleatorio <= 0.2 ):
@@ -53,10 +37,7 @@ class RuteadorA(Ruteador):
 
 	def generarTiempoArriboA(self):
 		aleatorio = random.uniform(0, 1)
-		#if aleatorio != 1:
 		valor = math.log(1.0 - aleatorio) / -(2.0/3.0)
-		#else:
-		#	valor = math.log(1.0 - 0.999) / -(2.0/3.0)
 		return valor
 
 	def generarTiempoDesvioAB(self):
@@ -102,8 +83,6 @@ class RuteadorB(Ruteador):
 		valor = 2.0 * aleatorio + 1.0
 		return valor
 
-	# Hice cambio nombre 1b y 2b
-
 	def generarTiempoTipo1B(self):
 		aleatorio = random.uniform(0, 1)
 		if 0.0 < aleatorio and aleatorio < (1.0/3.0):
@@ -114,8 +93,5 @@ class RuteadorB(Ruteador):
 
 	def generarTiempoTipo2B(self):
 		aleatorio = random.uniform(0, 1)
-		#if aleatorio != 1.0:
 		valor = math.log(1.0 - aleatorio) / -(4.0/3.0)
-		#else:
-			#valor = math.log(1.0 - 0.999) / -(4.0/3.0)
 		return valor

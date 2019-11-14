@@ -1,6 +1,3 @@
-# toDo: especificar atributos y metodos para estadísticas GLOBALES
-# implementar metodos para generar estadisticas
-
 # estructura para alamacenar los datos de cada corrida
 class Estadisticas:
 
@@ -20,31 +17,6 @@ class Estadisticas:
 	llamadasRecibidasTotal = 0
 	llamadasRuteadasTotal = 0
 
-
-	def __init__(self, iteraciones):
-		self.iteraciones =  iteraciones
-
-	def tiempoPromedioPermanencia(self):
-		prom = tiempoPermanenciaTotal / llamadasRuteadasTotal
-		return prom
-
-	def tiempoPromedioCola(self):
-		prom = tiempoColaTotal / llamadasRecibidasTotal
-		return prom
-
-
-	def eficiencia():
-		# (t. permanencia - t. cola) / t. permanencia
-		efic = tiempoPromedioPermanencia() - tiempoPromedioCola()
-		efic = efic / tiempoPromedioPermanencia()
-		return efic
-
-	#def imprimirDatosDuranteSimulacion():
-	#	# ...
-
-	#def imrpimirDatosFinalSimulacion():
-	#	# ...
-
 # esta clase es para estadísticas específicas de B, pero hereda de Estadísticas
 class EstadisticasB(Estadisticas):
 	
@@ -54,11 +26,3 @@ class EstadisticasB(Estadisticas):
 	# acumuladores para promedio de llamadas perdidas en B
 	llamadasPerdidasB = 0
 	llamadasLocalesAB = 0
-
-	def tamañoPromedioColaB(self):
-		prom = tamañoColaTiempoB / tiempoTotal
-		return prom
-
-	def porcentajeLlamadasPerdidasB(self, perdidas, total):
-		porcentaje = llamadasPerdidasB / llamadasLocalesB
-		return porcentaje
