@@ -6,7 +6,7 @@ import time
 
 class Ruteador:
 
-	# Variables del ruteador
+	"""# Variables del ruteador
 	ocupado = False
 	llamadasEnCola = 0
 
@@ -20,7 +20,7 @@ class Ruteador:
 	colaLlamadas = []
 
 
-	llamadasRuteadasLocales = 0
+	llamadasRuteadasLocales = 0"""
 
 	def __init__(self):
 		self.ocupado = False
@@ -30,6 +30,7 @@ class Ruteador:
 		self.tiempoTotalCola = 0.0
 		self.tiempoPermanencia = 0.0
 		self.colaLlamadas = []
+		self.llamadasRuteadasLocales = 0
 
 	def reiniciar(self):
 		ocupado = False
@@ -101,18 +102,20 @@ class RuteadorB(Ruteador):
 		valor = 2.0 * aleatorio + 1.0
 		return valor
 
-	def generarTiempoTipo1B(self):
-		aleatorio = random.uniform(0, 1)
-		#if aleatorio != 1.0:
-		valor = math.log(1.0 - aleatorio) / -(4.0/3.0)
-		#else:
-			#valor = math.log(1.0 - 0.999) / -(4.0/3.0)
-		return valor
+	# Hice cambio nombre 1b y 2b
 
-	def generarTiempoTipo2B(self):
+	def generarTiempoTipo1B(self):
 		aleatorio = random.uniform(0, 1)
 		if 0.0 < aleatorio and aleatorio < (1.0/3.0):
 			valor = 2.0 * aleatorio
 		elif (1.0/3.0) < aleatorio and aleatorio < 1.0:
 			valor = 3.0 - 2.0 * math.sqrt(2.0 * (1.0 - aleatorio))
+		return valor
+
+	def generarTiempoTipo2B(self):
+		aleatorio = random.uniform(0, 1)
+		#if aleatorio != 1.0:
+		valor = math.log(1.0 - aleatorio) / -(4.0/3.0)
+		#else:
+			#valor = math.log(1.0 - 0.999) / -(4.0/3.0)
 		return valor

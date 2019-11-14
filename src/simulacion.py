@@ -65,11 +65,11 @@ class Simulacion:
 			self.colaDesvioAB.clear()
 			ruteadorA = ruteador.RuteadorA()
 			ruteadorB = ruteador.RuteadorB()
-			
-			contador = 0
+		
 			while(self.reloj < self.tiempoMaximo):
 			# min es una función de python
 				proximo_evento = min(self.LA, self.LB, self.SA, self.SB, self.DAB)
+				#print("Eventos:", self.LA, self.LB, self.SA, self.SB, self.DAB)
 				# python no posee "switch", con 5 condiciones esta bien usar ifs
 				if  (proximo_evento == self.LA):
 					self.arriboA(ruteadorA)
@@ -81,7 +81,6 @@ class Simulacion:
 					self.salidaA(ruteadorA)
 					self.eventoProcesado = "Salida A"
 				elif(proximo_evento == self.SB):
-					contador += 1
 					self.salidaB(ruteadorA, ruteadorB)
 					self.eventoProcesado = "Salida B"
 				elif(proximo_evento == self.DAB):
@@ -91,6 +90,12 @@ class Simulacion:
 				if self.modoLento:
 					self.imprimirDuranteSimulacion(self.reloj, ruteadorA, ruteadorB)
 					time.sleep(self.delay)
+
+			"""
+				Estas estadisticas finales creo que deberian estar dentro del for de iteraciones y
+				luego dividirlas entre iteraciones totales para imprimir estadisticas promedio al
+				 final de la simulacion
+																									"""
 
 			# se recopilan datos para estadisticas finales
 			estadisticasA.tiempoTotal += self.reloj
@@ -120,16 +125,17 @@ class Simulacion:
 	def arriboA(self, ruteadorA):
 		self.reloj = self.LA
 		call = llamada.Llamada(self.reloj)
+		ruteadorA.llamadasRecibidas += 1
 		if ruteadorA.llamadasEnCola >= 5: # Desvio
 			call.setDesviada(True)
 			self.colaDesvioAB.append(call)
-			tiempoDesvio = self.reloj +  0.5 # ruteadorA.generarTiempoDesvioAB()
+			tiempoDesvio = self.colaDesvioAB[0].horaDeArribo +  0.5 
 			if self.DAB == INFINITO: # Si esta desprogramado
 				self.DAB = tiempoDesvio
 		else:
+			#ruteadorA.llamadasRecibidas += 1
 			ruteadorA.colaLlamadas.append(call) 
 			ruteadorA.llamadasEnCola += 1
-			ruteadorA.llamadasRecibidas += 1
 		if not ruteadorA.ocupado:
 			tipoLlamada = ruteadorA.generarTipoLlamadaA()
 			call.tipo = tipoLlamada
@@ -154,8 +160,10 @@ class Simulacion:
 		if ruteadorB.ocupado == False:
 			ruteadorB.ocupado = True
 			call.tiempoAtencion = ruteadorB.generarTiempoTipo2B() 
-			self.SB = self.reloj + call.tiempoAtencion
+			if self.SB == INFINITO:
+				self.SB = self.reloj + call.tiempoAtencion
 		self.LB = self.reloj + ruteadorB.generarTiempoArriboB()
+		#print("Lapso arribos: ", self.LB - self.reloj)
 
 	def salidaA(self, ruteadorA):
 		self.reloj = self.SA
@@ -175,35 +183,43 @@ class Simulacion:
 			call.tipo = tipoLlamada
 			if tipoLlamada == 1:
 				call.tiempoAtencion = ruteadorA.generarTiempoTipo1A()
-				self.SA = self.reloj + call.tiempoAtencion
+				if self.SA == INFINITO:
+					self.SA = self.reloj + call.tiempoAtencion
 			else:
 				call.tiempoAtencion = ruteadorA.generarTiempoTipo2A()
-				self.SA = self.reloj + call.tiempoAtencion
+				if self.SA == INFINITO:
+					self.SA = self.reloj + call.tiempoAtencion
 		
 
 	def salidaB(self, ruteadorA, ruteadorB):
 		self.reloj = self.SB
 		self.SB = INFINITO
+		fuePerdida = False
 		ruteadorB.ocupado = False
 		ruteadorB.llamadasEnCola -= 1
 		call = ruteadorB.colaLlamadas.pop(0)
-		if call.tipo == 2:
-			ruteadorB.llamadasRuteadasLocales += 1
-		if call.desviada == True:
-			ruteadorB.llamadasRuteadasDesviadas += 1
-		ruteadorB.llamadasRuteadas += 1
-		if ruteadorB.llamadasEnCola > 4:
-				if random.uniform(0, 1) <= 0.1:
-					ruteadorB.llamadasRuteadas -= 1
-					ruteadorB.llamadasPerdidasB += 1
+		ruteadorB.tamanoPondCola += ruteadorB.obtTiempoUltimoCambio(self.reloj) * ruteadorB.llamadasEnCola # Revisar si deberia estar despues del popeo
 		call.horaDeSalida = self.reloj
-		if call.desviada == True: 
-			ruteadorB.tiempoTotalColaDesviadas += call.tiempoEnCola() + 0.5
-			ruteadorB.tiempoTotalPermanenciaDesviadas += call.tiempoEnSistema() + 0.5
-		else:
-			ruteadorB.tiempoTotalCola += call.tiempoEnCola()
-			ruteadorB.tiempoPermanencia += call.tiempoEnSistema()
-		ruteadorB.tamanoPondCola += ruteadorB.obtTiempoUltimoCambio(self.reloj) * ruteadorB.llamadasEnCola
+		if ruteadorB.llamadasEnCola > 4 and random.uniform(0, 1) <= 0.1:
+			fuePerdida = True
+			ruteadorB.llamadasPerdidasB += 1
+		if not fuePerdida:
+			ruteadorB.llamadasRuteadas += 1
+			if call.tipo == 2 and not call.desviada:
+				ruteadorB.llamadasRuteadasLocales += 1	
+					
+			if call.desviada == True:
+				call.horaDeArribo = call.horaDeSalida - call.tiempoAtencion
+				ruteadorB.tiempoTotalColaDesviadas += call.tiempoEnCola() #+ 0.5
+				ruteadorB.tiempoTotalPermanenciaDesviadas += call.tiempoEnSistema() #+ 0.5
+				ruteadorB.llamadasRuteadasDesviadas += 1
+			else:
+				ruteadorB.tiempoTotalCola += call.tiempoEnCola()
+				ruteadorB.tiempoPermanencia += call.tiempoEnSistema()
+			#ruteadorB.tiempoTotalCola += call.tiempoEnCola()
+			#ruteadorB.tiempoPermanencia += call.tiempoEnSistema()
+			#print("Arribo:", call.horaDeArribo, "Salida: ", call.horaDeSalida)
+		print("Dios: ", ruteadorB.llamadasRecibidas, ruteadorB.llamadasRuteadas)
 		if ruteadorB.llamadasEnCola > 0:
 			ruteadorB.ocupado = True
 			if ruteadorB.colaLlamadas[0].desviada == True:
@@ -211,24 +227,29 @@ class Simulacion:
 				ruteadorB.colaLlamadas[0].tipo = tipoLlamada
 				if tipoLlamada == 1:
 					ruteadorB.colaLlamadas[0].tiempoAtencion = ruteadorB.generarTiempoTipo1B()
-					self.SB = self.reloj + ruteadorB.colaLlamadas[0].tiempoAtencion
+					if self.SB == INFINITO:
+						self.SB = self.reloj + ruteadorB.colaLlamadas[0].tiempoAtencion
 				else:
 					ruteadorB.colaLlamadas[0].tiempoAtencion = ruteadorB.generarTiempoTipo2B()
-					self.SB = self.reloj + ruteadorB.colaLlamadas[0].tiempoAtencion
+					if self.SB == INFINITO:
+						self.SB = self.reloj + ruteadorB.colaLlamadas[0].tiempoAtencion
 			else: # Generar tipo 2
 				ruteadorB.colaLlamadas[0].tiempoAtencion = ruteadorB.generarTiempoTipo2B()
-				self.SB = self.reloj + ruteadorB.colaLlamadas[0].tiempoAtencion
+				if self.SB == INFINITO:
+					self.SB = self.reloj + ruteadorB.colaLlamadas[0].tiempoAtencion
 
 
 	def desvioAB(self, ruteadorA, ruteadorB):
 		self.reloj = self.DAB
+		#self.colaDesvioAB[0].horaDeArribo = self.reloj
 		ruteadorB.colaLlamadas.append(self.colaDesvioAB.pop(0)) 
 		ruteadorB.llamadasEnCola += 1
 		ruteadorB.llamadasDesviadasAB += 1
 		ruteadorB.llamadasRecibidas += 1
 		ruteadorB.tamanoPondCola += ruteadorB.obtTiempoUltimoCambio(self.reloj) * ruteadorB.llamadasEnCola
 		if len(self.colaDesvioAB) > 0:
-			self.DAB = self.colaDesvioAB[0].horaDeArribo + 0.5
+			if self.DAB == INFINITO:
+				self.DAB = self.colaDesvioAB[0].horaDeArribo + 0.5
 		else:
 			self.DAB = INFINITO
 		if ruteadorB.ocupado == False:
@@ -238,10 +259,12 @@ class Simulacion:
 			call.tipo = tipoLlamada
 			if tipoLlamada == 1:
 				call.tiempoAtencion = ruteadorB.generarTiempoTipo1B()
-				self.SB = self.reloj + call.tiempoAtencion
+				if self.SB == INFINITO:
+					self.SB = self.reloj + call.tiempoAtencion
 			else:
 				call.tiempoAtencion = ruteadorB.generarTiempoTipo2B()
-				self.SB = self.reloj + call.tiempoAtencion
+				if self.SB == INFINITO:
+					self.SB = self.reloj + call.tiempoAtencion
 		
 		
 	def imprimirDuranteSimulacion(self, reloj, ruteadorA, ruteadorB):
@@ -286,7 +309,7 @@ class Simulacion:
 		print("Tiempo prom. permanencia de una llamada en B: ", ruteadorB.tiempoPermanencia / ruteadorB.llamadasRuteadas)
 		print("Tiempo prom. permanencia de una llamada desviada de A a B: ", ruteadorB.tiempoTotalPermanenciaDesviadas / ruteadorB.llamadasRuteadasDesviadas)
 		print("")
-		print("Tiempo prom. en cola de una llamada en A: ", ruteadorA.tiempoTotalCola / ruteadorA.llamadasRecibidas)
+		print("Tiempo prom. en cola de una llamada en A: ", ruteadorA.tiempoTotalCola / (ruteadorA.llamadasRecibidas - ruteadorB.llamadasDesviadasAB))
 		print("Tiempo prom. en cola de una llamada en B: ", ruteadorB.tiempoTotalCola / ruteadorB.llamadasRecibidas)
 		print("Tiempo prom. en cola de una llamada desviada de A a B: ", ruteadorB.tiempoTotalColaDesviadas / ruteadorB.llamadasDesviadasAB)
 		print("")
