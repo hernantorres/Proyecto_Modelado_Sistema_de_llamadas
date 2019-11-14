@@ -190,15 +190,16 @@ class Simulacion:
 			ruteadorA.ocupado = True
 			# generamos el tipo de la llamada y la hora de salida respectiva
 			tipoLlamada = ruteadorA.generarTipoLlamadaA()
-			call.tipo = tipoLlamada
+			# ruteadorB.colaLlamadas[0] es la llamada al final de la cola (la siguiente en ser antendida)
+			ruteadorA.colaLlamadas[0].tipo = tipoLlamada
 			if tipoLlamada == 1:
-				call.tiempoAtencion = ruteadorA.generarTiempoTipo1A()
+				ruteadorA.colaLlamadas[0].tiempoAtencion = ruteadorA.generarTiempoTipo1A()
 				if self.SA == INFINITO:
-					self.SA = self.reloj + call.tiempoAtencion
+					self.SA = self.reloj + ruteadorA.colaLlamadas[0].tiempoAtencion
 			else:
-				call.tiempoAtencion = ruteadorA.generarTiempoTipo2A()
+				ruteadorA.colaLlamadas[0].tiempoAtencion = ruteadorA.generarTiempoTipo2A()
 				if self.SA == INFINITO:
-					self.SA = self.reloj + call.tiempoAtencion
+					self.SA = self.reloj + ruteadorA.colaLlamadas[0].tiempoAtencion
 		
 
 	def salidaB(self, ruteadorA, ruteadorB):
@@ -222,16 +223,15 @@ class Simulacion:
 			# si es una llamada local, se aumenta un contador necesario para estadísticas
 			if call.tipo == 2:
 				ruteadorB.llamadasRuteadasLocales += 1	
-			
-			# si fue desviada, aumentamos contadores para estadísticas respectivamente
+			ruteadorB.tiempoTotalCola += call.tiempoEnCola()
+			ruteadorB.tiempoPermanencia += call.tiempoEnSistema()
+			# si fue desviada, aumentamos acumuladores para estadísticas
 			if call.desviada == True:
 				#call.horaDeArribo = call.horaDeSalida - call.tiempoAtencion
 				ruteadorB.tiempoTotalColaDesviadas += call.tiempoEnCola()
 				ruteadorB.tiempoTotalPermanenciaDesviadas += call.tiempoEnSistema()
 				ruteadorB.llamadasRuteadasDesviadas += 1
-			else:
-				ruteadorB.tiempoTotalCola += call.tiempoEnCola()
-				ruteadorB.tiempoPermanencia += call.tiempoEnSistema()
+
 		# si hay mas llamadas en cola, programamos otra salida
 		if ruteadorB.llamadasEnCola > 0:
 			ruteadorB.ocupado = True
@@ -313,38 +313,38 @@ class Simulacion:
 	def imprimirFinalCorrida(self, reloj, ruteadorA, ruteadorB, corrida):
 		print("")
 		print("////////////////////////////// RESULTADOS DE CORRIDA", corrida," //////////////////////////////")
-		print("Tamaño prom. de la cola en B: ", ruteadorB.tamanoPondCola / reloj)
+		print("Tamaño prom. de la cola en B: ", ruteadorB.tamanoPondCola / reloj, "llamadas")
 		print("")
-		print("Tiempo prom. permanencia de una llamada en A: ", ruteadorA.tiempoPermanencia / ruteadorA.llamadasRuteadas )
-		print("Tiempo prom. permanencia de una llamada en B: ", ruteadorB.tiempoPermanencia / (ruteadorB.llamadasRuteadas - ruteadorB.llamadasRuteadasDesviadas) ) 
-		print("Tiempo prom. permanencia de una llamada desviada de A a B: ", ruteadorB.tiempoTotalPermanenciaDesviadas / ruteadorB.llamadasRuteadasDesviadas)
+		print("Tiempo prom. permanencia de una llamada en A: ", ruteadorA.tiempoPermanencia / ruteadorA.llamadasRuteadas, "segs" )
+		print("Tiempo prom. permanencia de una llamada en B: ", ruteadorB.tiempoPermanencia / ruteadorB.llamadasRuteadas, "segs" ) 
+		print("Tiempo prom. permanencia de una llamada desviada de A a B: ", ruteadorB.tiempoTotalPermanenciaDesviadas / ruteadorB.llamadasRuteadasDesviadas, "segs" )
 		print("")
-		print("Tiempo prom. en cola de una llamada en A: ", ruteadorA.tiempoTotalCola / (ruteadorA.llamadasRecibidas - ruteadorB.llamadasDesviadasAB) )
-		print("Tiempo prom. en cola de una llamada en B: ", ruteadorB.tiempoTotalCola / (ruteadorB.llamadasRecibidas - ruteadorB.llamadasDesviadasAB) )
-		print("Tiempo prom. en cola de una llamada desviada de A a B: ", ruteadorB.tiempoTotalColaDesviadas / ruteadorB.llamadasDesviadasAB)
+		print("Tiempo prom. en cola de una llamada en A: ", ruteadorA.tiempoTotalCola / ruteadorA.llamadasRuteadas, "segs" )
+		print("Tiempo prom. en cola de una llamada en B: ", ruteadorB.tiempoTotalCola / ruteadorB.llamadasRuteadas, "segs" )
+		print("Tiempo prom. en cola de una llamada desviada de A a B: ", ruteadorB.tiempoTotalColaDesviadas / ruteadorB.llamadasRuteadasDesviadas, "segs" )
 		print("")
-		print("Porcentaje de llamadas perdidas por B :", ruteadorB.llamadasPerdidasB / ( ruteadorA.llamadasRuteadasLocales + ruteadorB.llamadasRuteadasLocales ) )
-		print("Eficiencia A: ", (ruteadorA.tiempoTotalCola) / ruteadorA.tiempoPermanencia)
-		print("Eficiencia B: ", (ruteadorB.tiempoTotalCola) / ruteadorB.tiempoPermanencia)
-		print("Eficiencia desviadas A - B: ", (ruteadorB.tiempoTotalColaDesviadas) / ruteadorB.tiempoTotalPermanenciaDesviadas)
+		print("Porcentaje de llamadas perdidas por B :", ruteadorB.llamadasPerdidasB / ( ruteadorA.llamadasRuteadasLocales + ruteadorB.llamadasRuteadasLocales ), "(de 1)" )
+		print("Eficiencia A: ", ruteadorA.tiempoTotalCola / ruteadorA.tiempoPermanencia)
+		print("Eficiencia B: ", ruteadorB.tiempoTotalCola / ruteadorB.tiempoPermanencia)
+		print("Eficiencia desviadas A - B: ", ruteadorB.tiempoTotalColaDesviadas / ruteadorB.tiempoTotalPermanenciaDesviadas)
 
 	def imprimirFinalSimulacion(self, estadisticasA, estadisticasB, estadisticasAB):
 		print("")
 		print("////////////////////////////// RESULTADOS DE SIMULACIÓN //////////////////////////////")
 		print("Tamaño prom. de la cola en B: ", estadisticasB.tamanoColaTiempoB / estadisticasB.tiempoTotal)
 		print("")
-		print("Tiempo prom. permanencia de una llamada en A: ", estadisticasA.tiempoPermanenciaTotal / estadisticasA.llamadasRuteadasTotal )
-		print("Tiempo prom. permanencia de una llamada en B: ", estadisticasB.tiempoPermanenciaTotal / (estadisticasB.llamadasRuteadasTotal - estadisticasAB.llamadasRuteadasTotal) )
-		print("Tiempo prom. permanencia de una llamada desviada de A a B: ", estadisticasAB.tiempoPermanenciaTotal / estadisticasAB.llamadasRuteadasTotal)
+		print("Tiempo prom. permanencia de una llamada en A: ", estadisticasA.tiempoPermanenciaTotal / estadisticasA.llamadasRuteadasTotal, "segs" )
+		print("Tiempo prom. permanencia de una llamada en B: ", estadisticasB.tiempoPermanenciaTotal / estadisticasB.llamadasRuteadasTotal, "segs" )
+		print("Tiempo prom. permanencia de una llamada desviada de A a B: ", estadisticasAB.tiempoPermanenciaTotal / estadisticasAB.llamadasRuteadasTotal, "segs" )
 		print("")
-		print("Tiempo prom. en cola de una llamada en A: ", estadisticasA.tiempoColaTotal / (estadisticasA.llamadasRecibidasTotal - estadisticasAB.llamadasRecibidasTotal) )
-		print("Tiempo prom. en cola de una llamada en B: ", estadisticasB.tiempoColaTotal / (estadisticasB.llamadasRecibidasTotal - estadisticasAB.llamadasRecibidasTotal) )
-		print("Tiempo prom. en cola de una llamada desviada de A a B: ", estadisticasAB.tiempoColaTotal / estadisticasAB.llamadasRecibidasTotal)
+		print("Tiempo prom. en cola de una llamada en A: ", estadisticasA.tiempoColaTotal / estadisticasA.llamadasRuteadasTotal, "segs" )
+		print("Tiempo prom. en cola de una llamada en B: ", estadisticasB.tiempoColaTotal / estadisticasB.llamadasRuteadasTotal, "segs" )
+		print("Tiempo prom. en cola de una llamada desviada de A a B: ", estadisticasAB.tiempoColaTotal / estadisticasAB.llamadasRuteadasTotal, "segs" )
 		print("")
-		print("Porcentaje de llamadas perdidas por B :", estadisticasB.llamadasPerdidasB / estadisticasB.llamadasLocalesAB )
-		print("Eficiencia A: ", (estadisticasA.tiempoColaTotal) / estadisticasA.tiempoPermanenciaTotal)
-		print("Eficiencia B: ", (estadisticasB.tiempoColaTotal) / estadisticasB.tiempoPermanenciaTotal)
-		print("Eficiencia desviadas A - B: ", (estadisticasAB.tiempoColaTotal) / estadisticasAB.tiempoPermanenciaTotal)
+		print("Porcentaje de llamadas perdidas por B :", estadisticasB.llamadasPerdidasB / estadisticasB.llamadasLocalesAB, "(de 1)" )
+		print("Eficiencia A: ", estadisticasA.tiempoColaTotal / estadisticasA.tiempoPermanenciaTotal)
+		print("Eficiencia B: ", estadisticasB.tiempoColaTotal / estadisticasB.tiempoPermanenciaTotal)
+		print("Eficiencia desviadas A - B: ", estadisticasAB.tiempoColaTotal / estadisticasAB.tiempoPermanenciaTotal)
 
 
 
